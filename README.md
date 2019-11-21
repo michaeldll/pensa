@@ -1,2 +1,3 @@
-# pensa
-Pensa : a React / WebGL / WebAudio project.
+##Pensa, a React / WebGL / Webaudio project.
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

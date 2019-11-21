@@ -1,0 +1,65 @@
+body {
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+		'Droid Sans', 'Helvetica Neue', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+p {
+	margin-block-start: 0;
+	margin-block-end: 0;
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.markov-generator-container {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	align-items: center;
+	overflow: hidden;
+	z-index: 2;
+}
+
+.markov-generator-container .in,
+.markov-generator-container .out {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	color: white;
+	height: 100%;
+	font-size: x-large;
+	text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+.markov-generator-container .out {
+	padding: 0 10%;
+}
+
+.markov-generator-container .content-editable-container {
+	display: table;
+	height: 100%;
+}
+
+.markov-generator-container div[contenteditable='true'] {
+	outline: none;
+	display: table-cell;
+	vertical-align: middle;
+	height: 100%;
+	text-align: right;
+	caret-color: #333;
+	padding: 0 10%;
+	transition: all 0.2s ease-in-out;
+}
+
+.markov-generator-container div[contenteditable='true']:hover {
+	background-color: rgba(249, 213, 134, 0.5);
+}
