@@ -5,7 +5,7 @@ const initialState = {
 	markov: { source: '', out: [] },
 };
 
-const getMarkovForecastFrom = string => {
+const getMarkovForecastFrom = (string) => {
 	if (string.indexOf('\n') === -1) return [];
 
 	const words = string.split(' ');
@@ -29,6 +29,7 @@ const reducer = (state, action) => {
 					source: action.value,
 					out: getMarkovForecastFrom(value)
 						.join(' ')
+						.replace(/&nbsp;/g, ' ')
 						.split('\n'),
 				},
 			};

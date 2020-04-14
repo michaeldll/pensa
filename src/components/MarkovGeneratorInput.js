@@ -6,14 +6,14 @@ export const MarkovGeneratorInput = () => {
 	const [state, setState] = useContext(MarkovContext);
 
 	const handleTextChange = useCallback(
-		e => {
+		(e) => {
 			const input = e.target.value;
 			setState({ type: 'add markov source', value: input });
 		},
 		[setState]
 	);
 
-	const html = state.markov.source.replace('\n', '<br>');
+	const html = state.markov.source.replace(/\n/g, '<br>');
 
 	return (
 		<div className='in'>

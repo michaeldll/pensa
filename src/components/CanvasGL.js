@@ -38,20 +38,26 @@ export const CanvasGL = () => {
 			vertexShader, //string
 			fragmentShader, //string
 			vertexDisplacement, //Float32Array
-			frameCounter = 0, //number
+			// frameCounter = 0, //number
 			controls, //OrbitControls
 			stats, //any
 			delta = 0, //number
 			microphoneDataArray, //Uint8Array
 			microphoneAnalyser, //AnalyserNode
-			microphroneFrequencySum = 0, //number
-			microphoneFrequencyAverage = 0; //number
+			microphoneFrequencySum = 0, //number
+			microphoneFrequencyAverage = 0, //number
+			bufferLength; //number
+
+		const clamp = (val, min, max) => {
+			return val > max ? max : val < min ? min : val;
+		};
 
 		const init = () => {
 			//Sound
-			getAnalyser().then(analyser => {
+			getAnalyser().then((analyser) => {
 				microphoneAnalyser = analyser;
 				microphoneDataArray = new Uint8Array(microphoneAnalyser.fftSize);
+				bufferLength = microphoneAnalyser.frequencyBinCount;
 			});
 
 			//Three
@@ -180,6 +186,7 @@ export const CanvasGL = () => {
 			controls.maxPolarAngle = 2 * Math.PI;
 			document.getElementById('gl-container').style.zIndex = 3;
 		};
+
 		const setOctahedron = () => {
 			vertexDisplacement = new Float32Array(geometry.attributes.position.count);
 			for (let i = 0; i < vertexDisplacement.length; i++) {
@@ -205,49 +212,40 @@ export const CanvasGL = () => {
 		};
 
 		const animate = () => {
-			if (microphoneAnalyser && microphoneDataArray) delta += (microphoneFrequencyAverage - 127) * 0.1;
-			// 0.00 +- 0.01
-			else delta += 0.05;
+			delta += 0.02;
 
-			frameCounter++;
+			// frameCounter++;
 
-			// if (microphoneAnalyser && microphoneDataArray) {
-			// 	microphoneAnalyser.getByteTimeDomainData(microphoneDataArray);
+			if (microphoneAnalyser && microphoneDataArray) {
+				//update frequency data array
+				microphoneAnalyser.getByteFrequencyData(microphoneDataArray);
 
-			// 	microphroneFrequencySum = 0;
+				const frequencyArr = [];
 
-			// 	microphoneDataArray.forEach(number => {
-			// 		microphroneFrequencySum += number;
-			// 	});
-
-			// 	microphoneFrequencyAverage = microphroneFrequencySum / microphoneDataArray.length;
-			// }
-
-			if (frameCounter % 60 === 1) {
-				if (microphoneAnalyser && microphoneDataArray) {
-					microphoneAnalyser.getByteTimeDomainData(microphoneDataArray);
-
-					microphroneFrequencySum = 0;
-
-					microphoneDataArray.forEach(number => {
-						microphroneFrequencySum += number;
-					});
-
-					microphoneFrequencyAverage = microphroneFrequencySum / microphoneDataArray.length;
+				for (let i = 0; i < bufferLength; i++) {
+					frequencyArr.push(microphoneDataArray[i] / 2);
 				}
-			}
 
-			if (frameCounter % 60 === 1) {
-				if (microphoneAnalyser && microphoneDataArray) {
-					console.log((microphoneFrequencyAverage - 127) * 0.1);
-				}
+				// console.log(frequencyArr);
+
+				microphoneFrequencySum = 0;
+
+				frequencyArr.forEach((f) => {
+					microphoneFrequencySum += f;
+				});
+
+				microphoneFrequencyAverage = microphoneFrequencySum / frequencyArr.length;
+
+				// console.log(microphoneFrequencyAverage);
+
+				octahedron.material.uniforms.frequencyAverage.value = microphoneFrequencyAverage;
 			}
 
 			octahedron.material.uniforms.delta.value = 0.5 + Math.sin(delta) * 0.5;
-			octahedron.material.uniforms.frequencyAverage.value = microphoneFrequencyAverage;
 
 			for (var i = 0; i < vertexDisplacement.length; i++) {
-				vertexDisplacement[i] = Math.sin(i + delta) * 0.3;
+				vertexDisplacement[i] =
+					Math.sin(i + delta) * 0.3 * clamp((microphoneFrequencyAverage + 10) * 0.04, 0, 1.5);
 			}
 
 			octahedron.geometry.attributes.vertexDisplacement.needsUpdate = true;
