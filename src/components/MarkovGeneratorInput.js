@@ -13,12 +13,22 @@ export const MarkovGeneratorInput = () => {
 		[setState]
 	);
 
+	const handlePaste = useCallback((e) => {
+		e.preventDefault();
+
+		// get text representation of clipboard
+		var text = (e.originalEvent || e).clipboardData.getData('text/plain');
+
+		// insert text manually
+		document.execCommand('insertHTML', false, text);
+	}, []);
+
 	const html = state.markov.source.replace(/\n/g, '<br>');
 
 	return (
 		<div className='in'>
 			<div className='content-editable-container'>
-				<ContentEditable onChange={handleTextChange} html={html} />
+				<ContentEditable onPaste={handlePaste} onChange={handleTextChange} html={html} />
 			</div>
 		</div>
 	);

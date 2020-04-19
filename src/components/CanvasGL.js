@@ -226,8 +226,6 @@ export const CanvasGL = () => {
 					frequencyArr.push(microphoneDataArray[i] / 2);
 				}
 
-				// console.log(frequencyArr);
-
 				microphoneFrequencySum = 0;
 
 				frequencyArr.forEach((f) => {
@@ -236,8 +234,6 @@ export const CanvasGL = () => {
 
 				microphoneFrequencyAverage = microphoneFrequencySum / frequencyArr.length;
 
-				// console.log(microphoneFrequencyAverage);
-
 				octahedron.material.uniforms.frequencyAverage.value = microphoneFrequencyAverage;
 			}
 
@@ -245,7 +241,7 @@ export const CanvasGL = () => {
 
 			for (var i = 0; i < vertexDisplacement.length; i++) {
 				vertexDisplacement[i] =
-					Math.sin(i + delta) * 0.3 * clamp((microphoneFrequencyAverage + 10) * 0.04, 0, 1.5);
+					Math.sin(i + delta) * 0.3 * clamp((microphoneFrequencyAverage + 10) * 0.05, 0, 1.5);
 			}
 
 			octahedron.geometry.attributes.vertexDisplacement.needsUpdate = true;

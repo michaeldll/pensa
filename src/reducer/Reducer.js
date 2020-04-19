@@ -8,11 +8,23 @@ const initialState = {
 const getMarkovForecastFrom = (string) => {
 	if (string.indexOf('\n') === -1) return [];
 
-	const words = string.split(' ');
+	const words = string.replace(/&nbsp;/g, ' ').split(' ');
+	const newLineIndexes = words
+		.map((word, index) => {
+			if (word.indexOf('\n') > -1) return index;
+		})
+		.filter((index) => typeof index !== 'undefined');
+
 	const chain = new Chain([words]);
 	const forecast = chain.walk();
+	const forecastWithNewLines = forecast.map((word, wordIndex) => {
+		for (let index = 0; index < newLineIndexes.length; index++) {
+			if (wordIndex === newLineIndexes[index]) return word.concat('\n');
+			else return word;
+		}
+	});
 
-	return forecast; //array
+	return forecastWithNewLines; //array
 };
 
 const reducer = (state, action) => {
