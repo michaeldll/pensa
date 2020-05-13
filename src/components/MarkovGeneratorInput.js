@@ -4,7 +4,7 @@ import { MarkovContext } from '../reducer/Reducer';
 
 export const MarkovGeneratorInput = () => {
 	const [state, setState] = useContext(MarkovContext);
-	const placeholder = useRef(null)
+	const placeholder = useRef(null);
 
 	const handleTextChange = useCallback(
 		(e) => {
@@ -24,17 +24,23 @@ export const MarkovGeneratorInput = () => {
 		document.execCommand('insertHTML', false, text);
 	}, []);
 
-	const onPlaceholderClick = useCallback(e=>{
-		if(placeholder.current) placeholder.current.style.display="none"
-	},[])
+	const onPlaceholderClick = useCallback((e) => {
+		if (placeholder.current) placeholder.current.style.display = 'none';
+	}, []);
 
 	const html = state.markov.source.replace(/\n/g, '<br>');
 
 	return (
 		<div className='in'>
 			<div className='content-editable-container'>
-				<ContentEditable onClick={onPlaceholderClick} onPaste={handlePaste} onChange={handleTextChange} html={html}></ContentEditable>
-				<div ref={placeholder} className="placeholder">Type here</div>
+				<ContentEditable
+					onClick={onPlaceholderClick}
+					onPaste={handlePaste}
+					onChange={handleTextChange}
+					html={html}></ContentEditable>
+				<div ref={placeholder} className='placeholder'>
+					Type your lyrics here
+				</div>
 			</div>
 		</div>
 	);
